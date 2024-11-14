@@ -58,10 +58,10 @@ const tx = await contract.withdrawWithPermit(
     s
 );
 
-Returns 
+```
+- Returns 
 nonce (uint256): Unique identifier for the withdrawal transaction
 
-```
 
 
 # withdrawToEscrow
@@ -74,10 +74,9 @@ _amountPlusfee (uint256): Total withdrawal amount including fees
 _exchangeRate (uint256): Current exchange rate for the token
 _feeAmount (uint256): Fee amount to be deducted
 
-Returns
-
-nonce (uint256): Unique identifier for the withdrawal transaction
 ```
+- Returns
+nonce (uint256): Unique identifier for the withdrawal transaction
 
 - Example
 ```
@@ -110,13 +109,17 @@ const tx = await contract.withdrawToEscrow(
 ```
 const axios = require('axios');
 
-async function notifyWithdrawal(transactionHash) {
+async function withdraw() {
     try {
+        const phone = "254703710518"
+        const token = "0x55d398326f99059fF775485246999027B3197955"
+        const hash = "0xe15dff0f39cdba04f2c0888935902552060a12474311bc6cb150ed0f012d665c"
+        const chain = "base"
         const response = await axios.post('https://api.swypt.io/api/token-pay-offramp', {
-            partyB: "254703710518",
-            tokenAddress: "0x55d398326f99059fF775485246999027B3197955",
-            hash: transactionHash,
-            chain: "bsc"
+            partyB: phone,
+            tokenAddress: token,
+            hash: hash,
+            chain: chain
         });
         return response.data;
     } catch (error) {
