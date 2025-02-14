@@ -1,8 +1,216 @@
 # token-pay-swypt-documentation
 This repo serves as a documentation for integration with swypt APIs and how to integrate with our smart contract functions. 
 
-Deployed Contract on BASE
-[Swypt Contract](https://basescan.org/address/0x83c6a042f199588d20c1312C9826E90C420Bc9b7#code)
+Deployed Contract on POLYGON
+[Swypt Contract](https://polygonscan.com/address/0x980b2f387bbecd67d94b2b6eebd4fd238946466a#code)
+
+
+# Getting Quotes
+Before performing any on-ramp or off-ramp operations, you should first get a quote to determine rates, fees, and expected output amounts.
+
+## Get Quote Endpoint
+`POST https://pool.swypt.io/api/quotes`
+
+Get quote for converting between fiat and crypto currencies.
+
+### Request Parameters
+
+| Parameter | Description | Example | Required |
+| --- | --- | --- | --- |
+| type | Type of operation ('onramp' or 'offramp') | "onramp" | Yes |
+| amount | Amount to convert | "5000" | Yes |
+| fiatCurrency | Fiat currency code | "KES" | Yes |
+| cryptoCurrency | Cryptocurrency symbol | "USDT" | Yes |
+| network | Blockchain network | "Polygon" | Yes |
+| category | Transaction category (for offramp only) | "B2C" | No |
+
+### Example Requests
+
+1. Onramp (Converting KES to USDT):
+```javascript
+const response = await axios.post('https://pool.swypt.io/api/quotes', {
+  type: "onramp",
+  amount: "5000",
+  fiatCurrency: "KES",
+  cryptoCurrency: "USDT",
+  network: "Polygon"
+});
+```
+
+2. Offramp (Converting USDT to KES):
+```javascript
+const response = await axios.post('https://pool.swypt.io/api/quotes', {
+  type: "offramp",
+  amount: "100",
+  fiatCurrency: "KES",
+  cryptoCurrency: "USDT",
+  network: "Polygon",
+  category: "B2C"
+});
+```
+
+### Response Format
+```json
+{
+  "statusCode": 200,
+  "message": "Quote retrieved successfully",
+  "data": {
+    "inputAmount": "5000",
+    "outputAmount": 33.25,
+    "inputCurrency": "KES",
+    "outputCurrency": "USDT",
+    "exchangeRate": 0.97087,
+    "markup": 1.03,
+    "type": "onramp",
+    "network": "Polygon",
+    "fee": {
+      "amount": 0.5,
+      "currency": "USDT",
+      "details": {
+        "feeInKES": 10,
+        "estimatedOutputKES": 5000
+      }
+    }
+  }
+}
+```
+
+### Error Response
+```json
+{
+  "statusCode": 400,
+  "message": "Invalid network",
+  "error": "Unsupported network. Supported networks: Lisk, Celo, Base, Polygon"
+}
+```
+
+## Get Supported Assets
+`GET https://pool.swypt.io/api/supported-assets`
+
+Retrieve all supported assets, networks, and currencies.
+
+### Response Format
+```json
+{
+  "statusCode": 200,
+  "message": "Assets retrieved successfully",
+  "data": {
+    "networks": ["Lisk", "Celo", "Base", "Polygon"],
+    "fiat": ["KES"],
+    "crypto": {
+      "Polygon": [
+        {
+          "symbol": "USDT",
+          "name": "Tether Polygon",
+          "decimals": 6,
+          "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+        }
+      ]
+      // ... other networks
+    }
+  }
+}
+```
+
+# token-pay-swypt-documentation
+[Previous sections remain the same...]
+
+# Create Offramp Ticket
+`POST /api/user-offramp-ticket`
+
+Create a ticket for offramp transactions. This endpoint handles both new transactions and failed/pending transaction cases.
+
+## Request Parameters
+
+| Parameter | Description | Required | Example |
+| --- | --- | --- | --- |
+| orderID | ID of failed/pending transaction (for retries) | No | "ORD123456" |
+| phone | Recipient's phone number | Yes | "254703710518" |
+| amount | Transaction amount | Yes | "100" |
+| description | Transaction description | Yes | "USDT withdrawal" |
+| side | Transaction side | Yes | "off-ramp" |
+| userAddress | User's blockchain address | Yes | "0x123..." |
+| symbol | Token symbol | Yes | "USDT" |
+| tokenAddress | Token contract address | Yes** | "0x55d398326f99..." |
+| chain | Blockchain network | Yes | "Polygon" |
+
+
+\* Required only for retrying failed/pending transactions
+\** Required for new transactions (when orderID is not provided)
+
+## Example Requests
+
+1. Creating a new offramp ticket:
+```javascript
+const response = await axios.post('https://pool.swypt.io/api/user-offramp-ticket', {
+  orderID: "ORD123456" //optional
+  phone: "254703710518",
+  amount: "100",
+  description: "USDT withdrawal to M-Pesa",
+  side: "off-ramp",
+  userAddress: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+  symbol: "USDT",
+  tokenAddress: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+  chain: "Polygon"
+});
+```
+
+2. Retrying a failed transaction:
+```javascript
+const response = await axios.post('https://pool.swypt.io/api/user-offramp-ticket', {
+  orderID: "ORD123456",
+  symbol: "USDT",  // Optional override
+  chain: "Polygon" // Optional override
+});
+```
+
+## Success Response
+```json
+{
+  "status": "success",
+  "data": {
+    "refund": {
+      "PhoneNumber": "254703710518",
+      "Amount": "100",
+      "Description": "USDT withdrawal to M-Pesa",
+      "Side": "off-ramp",
+      "userAddress": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+      "symbol": "USDT",
+      "tokenAddress": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+      "chain": "Polygon",
+      "_id": "507f1f77bcf86cd799439011",
+      "createdAt": "2024-02-14T12:00:00.000Z"
+    }
+  }
+}
+```
+
+## Error Responses
+
+1. Missing Required Fields:
+```json
+{
+  "status": "error",
+  "message": "Please provide all required inputs: phone, amount, description, side, userAddress, symbol, tokenAddress, and chain"
+}
+```
+
+2. Invalid Order ID:
+```json
+{
+  "status": "error",
+  "message": "No failed or pending transaction found with this orderID"
+}
+```
+
+3. Server Error:
+```json
+{
+  "status": "error",
+  "message": "Unable to process refund ticket"
+}
+```
+
 
 # off-ramp 
 - Swypt offramp involves the following steps 
@@ -92,40 +300,162 @@ const tx = await contract.withdrawToEscrow(
 );
 ```
 
-# Calling the swypt-offramp API endoint 
-- After successful blockchain withdrawal transaction, now you can send a `POST` request to swypt backend API which will then process the offramp transaction, thereby sending the fiat amount to the user MPesa mobile money phone number. The following example below explains 
 
-- `POST` request payload params
+# Offramp Transaction Processing
 
-| Parameter | Description | Example | Required |
+## Initiate Offramp Transaction
+`POST https://pool.swypt.io/api/swypt-offramp`
+
+Process an offramp transaction after successful blockchain withdrawal.
+
+### Request Parameters
+
+| Parameter | Description | Required | Example |
 | --- | --- | --- | --- |
-| partyB | Recipient's phone number (international format) | 254703710518 | Yes |
-| tokenAddress | Token contract address | 0x55d398326f99059fF775485246999027B3197955 | Yes |
-| hash | Withdrawal transaction hash | 0xe15dff0f39cdba04f2c0888935902552060a12474311bc6cb150ed0f012d665c | Yes |
-| chain | Blockchain network identifier | base | Yes |
+| chain | Blockchain network | Yes | "Celo" |
+| hash | Transaction hash from blockchain | Yes | "0x80856f025..." |
+| partyB | Recipient's phone number | Yes | "254703710518" |
+| tokenAddress | Token contract address | Yes | "0x48065fbBE..." |
 
-
--  Here is how you can send the request using axios to the swypt-offramp api 
+### Example Request
+```javascript
+const response = await axios.post('https://pool.swypt.io/api/swypt-offramp', {
+  chain: "Celo",
+  hash: "0x80856f025035da9387873410155c4868c1825101e2c06d580aea48e8179b5e0b",
+  partyB: "254703710518",
+  tokenAddress: "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e"
+});
 ```
-const axios = require('axios');
 
-async function withdraw() {
-    try {
-        const phone = "254703710518"
-        const token = "0x55d398326f99059fF775485246999027B3197955"
-        const hash = "0xe15dff0f39cdba04f2c0888935902552060a12474311bc6cb150ed0f012d665c"
-        const chain = "base"
-        const response = await axios.post('https://api.swypt.io/api/token-pay-offramp', {
-            partyB: phone,
-            tokenAddress: token,
-            hash: hash,
-            chain: chain
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error notifying withdrawal:', error);
-        throw error;
-    }
+### Success Response
+```json
+{
+  "status": "success",
+  "message": "Withdrawal payment initiated successfully",
+  "data": {
+    "orderID": "WD-xsy6e-HO"
+  }
 }
 ```
+
+### Error Response
+```json
+{
+  "status": "error",
+  "message": "This blockchain transaction has already been processed",
+  "data": {
+    "orderID": "WD-xsy6e-HO"
+  }
+}
+```
+
+## Check off-ramp Transaction Status
+`GET https://pool.swypt.io/api/swypt-offramp-status/:orderID`
+
+Check the status of an offramp transaction using its orderID.
+
+### Parameters
+| Parameter | Location | Description | Required | Example |
+| --- | --- | --- | --- | --- |
+| orderID | URL | Transaction order ID | Yes | "WD-xsy6e-HO" |
+
+### Example Request
+```javascript
+const response = await axios.get('https://pool.swypt.io/api/swypt-offramp-status/WD-xsy6e-HO');
+```
+
+### Success Response
+```json
+{
+  "status": "success",
+  "data": {
+    "status": "SUCCESS",
+    "message": "Withdrawal completed successfully",
+    "details": {
+      "phoneNumber": "254703710518",
+      "ReceiverPartyPublicName": "254703710518 - Henry Kariuki Nyagah",
+      "transactionSize": "20.00",
+      "transactionSide": "withdraw",
+      "initiatedAt": "2025-02-02T12:45:21.859Z",
+      "mpesaReceipt": "TB21GOZTI9",
+      "completedAt": "2025-02-02T15:45:23.000Z"
+    }
+  }
+}
+```
+
+### Possible Status Values
+- `PENDING`: Transaction is being processed
+- `SUCCESS`: Transaction completed successfully
+- `FAILED`: Transaction failed
+
+### Error Responses
+
+1. Missing Order ID:
+```json
+{
+  "status": "error",
+  "message": "orderID ID is required"
+}
+```
+
+2. Transaction Not Found:
+```json
+{
+  "status": "error",
+  "message": "Transaction with the following WD-xsy6e-HO the not found"
+}
+```
+
+3. Server Error:
+```json
+{
+  "status": "error",
+  "message": "Failed to check withdrawal status"
+}
+```
+
+### Response Details by Status
+
+1. Pending Transaction:
+```json
+{
+  "status": "success",
+  "data": {
+    "status": "PENDING",
+    "message": "Your withdrawal is being processed",
+    "details": {
+      "phoneNumber": "254703710518",
+      "ReceiverPartyPublicName": "254703710518 - Henry Kariuki Nyagah",
+      "transactionSize": "20.00",
+      "transactionSide": "withdraw",
+      "initiatedAt": "2025-02-02T12:45:21.859Z"
+    }
+  }
+}
+```
+
+2. Failed Transaction:
+```json
+{
+  "status": "success",
+  "data": {
+    "status": "FAILED",
+    "message": "Withdrawal failed",
+    "details": {
+      "phoneNumber": "254703710518",
+      "ReceiverPartyPublicName": "254703710518 - Henry Kariuki Nyagah",
+      "transactionSize": "20.00",
+      "transactionSide": "withdraw",
+      "initiatedAt": "2025-02-02T12:45:21.859Z",
+      "failureReason": "Transaction timeout",
+      "resultCode": "1234"
+    }
+  }
+}
+```
+
+
+
+
 
