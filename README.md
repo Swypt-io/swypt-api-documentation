@@ -55,24 +55,24 @@ const response = await axios.post('https://pool.swypt.io/api/quotes', {
   "statusCode": 200,
   "message": "Quote retrieved successfully",
   "data": {
-    "inputAmount": "5000",
-    "outputAmount": 33.25,
-    "inputCurrency": "KES",
-    "outputCurrency": "USDT",
-    "exchangeRate": 0.97087,
-    "markup": 1.03,
-    "type": "onramp",
+    "inputAmount": "2",
+    "outputAmount": 255.72,
+    "inputCurrency": "USDT",
+    "outputCurrency": "KES",
+    "exchangeRate": 0.99,
+    "type": "offramp",
     "network": "Polygon",
     "fee": {
-      "amount": 0.5,
+      "amount": 0.05,
       "currency": "USDT",
       "details": {
-        "feeInKES": 10,
-        "estimatedOutputKES": 5000
+        "feeInKES": 6,
+        "estimatedOutputKES": 258.3
       }
     }
   }
 }
+
 ```
 
 ### Error Response
@@ -111,9 +111,6 @@ Retrieve all supported assets, networks, and currencies.
   }
 }
 ```
-
-# token-pay-swypt-documentation
-[Previous sections remain the same...]
 
 # Create Offramp Ticket
 `POST /api/user-offramp-ticket`
