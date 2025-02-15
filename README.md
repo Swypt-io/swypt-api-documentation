@@ -423,7 +423,6 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-offramp-status
     "message": "Your withdrawal is being processed",
     "details": {
       "phoneNumber": "254703710518",
-      "ReceiverPartyPublicName": "254703710518 - Henry Kariuki Nyagah",
       "transactionSize": "20.00",
       "transactionSide": "withdraw",
       "initiatedAt": "2025-02-02T12:45:21.859Z"
@@ -440,8 +439,7 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-offramp-status
     "status": "FAILED",
     "message": "Withdrawal failed",
     "details": {
-      "phoneNumber": "254703710518",
-      "ReceiverPartyPublicName": "254703710518 - Henry Kariuki Nyagah",
+      "phoneNumber": "254703710518",,
       "transactionSize": "20.00",
       "transactionSide": "withdraw",
       "initiatedAt": "2025-02-02T12:45:21.859Z",
