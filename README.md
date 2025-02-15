@@ -390,7 +390,7 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-offramp-status
 ```
 
 # Create Offramp Ticket
-`POST /api/user-offramp-ticket`
+`POST 'https://pool.swypt.io/api/user-offramp-ticket`
 
 Create a ticket for offramp transactions. This endpoint supports two methods:
 1. Creating a ticket from a failed/pending transaction using orderID
@@ -398,9 +398,9 @@ Create a ticket for offramp transactions. This endpoint supports two methods:
 
 ## Request Parameters
 
-| Parameter | Description | Required* | Example |
+| Parameter | Description | Required | Example |
 | --- | --- | --- | --- |
-| orderID | ID of failed/pending transaction | No** | "WD-xsy6e-HO" |
+| orderID | ID of failed/pending transaction | No | "WD-xsy6e-HO" |
 | phone | User's phone number | Yes | "254703710518" |
 | amount | Crypto amount | Yes | "100" |
 | description | Ticket description | Yes | "Failed withdrawal attempt" |
@@ -410,8 +410,10 @@ Create a ticket for offramp transactions. This endpoint supports two methods:
 | tokenAddress | Token contract address | Yes | "0xc2132D05..." |
 | chain | Blockchain network | Yes | "Polygon" |
 
-\* Required for direct ticket creation
-\** If orderID is provided, other fields become optional and will be populated from the failed/pending transaction
+``` 
+orderID Required for direct ticket creation
+If orderID is provided, other fields become optional and will be populated from the failed/pending transaction
+```
 
 ## Example Requests
 
@@ -508,10 +510,9 @@ const response = await axios.post('https://pool.swypt.io/api/user-offramp-ticket
 2. Uses `CryptoAmount` instead of `Amount` when retrieving from failed transactions
 3. Handles amounts in crypto value rather than fiat
 4. Includes different transaction status checks in the backend
-5. Uses B2CTransactionModel for transaction lookups
 
 
-# ONRAMP  FlOW
+# ONRAMP PROCESS FlOW
 
 ## 1. Initiate STK Push
 `POST /https://pool.swypt.io/api/swypt-onramping`
