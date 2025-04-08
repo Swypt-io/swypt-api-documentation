@@ -16,43 +16,56 @@ Deployed Contract on CELO
 Before performing any on-ramp or off-ramp operations, you should first get a quote to determine rates, fees, and expected output amounts.
 
 ## Get Quote Endpoint
-`POST https://pool.swypt.io/api/quotes`
+`POST https://pool.swypt.io/api/swypt-quotes`
 
 Get quote for converting between fiat and crypto currencies.
 
-### Request Parameters
+### Authentication Required
+This endpoint requires API key authentication. Include the following headers with your request:
+- `x-api-key`: Your API key
+- `x-api-secret`: Your API secret
 
+### Request Parameters
 | Parameter | Description | Example | Required |
 | --- | --- | --- | --- |
 | type | Type of operation ('onramp' or 'offramp') | "onramp" | Yes |
 | amount | Amount to convert | "5000" | Yes |
 | fiatCurrency | Fiat currency code | "KES" | Yes |
 | cryptoCurrency | Cryptocurrency symbol | "USDT" | Yes |
-| network | Blockchain network | "Polygon" | Yes |
+| network | Blockchain network | "Celo" | Yes |
 | category | Transaction category (for offramp only) | "B2C" | No |
 
 ### Example Requests
-
 1. Onramp (Converting KES to USDT):
 ```javascript
-const response = await axios.post('https://pool.swypt.io/api/quotes', {
+const response = await axios.post('https://pool.swypt.io/api/swypt-quotes', {
   type: "onramp",
   amount: "100",
   fiatCurrency: "KES",
-  cryptoCurrency: "cKes", //USDT, USDC
+  cryptoCurrency: "USDT", //cKes, USDC
   network: "Celo"
+}, {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY',
+    'x-api-secret': 'YOUR_API_SECRET'
+  }
 });
 ```
 
 2. Offramp (Converting USDT to KES):
 ```javascript
-const response = await axios.post('https://pool.swypt.io/api/quotes', {
+const response = await axios.post('https://pool.swypt.io/api/swypt-quotes', {
   type: "offramp",
-  amount: "100",
+  amount: "2",
   fiatCurrency: "KES",
   cryptoCurrency: "USDT",
-  network: "Polygon",
+  network: "Celo",
   category: "B2C"
+}, {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY',
+    'x-api-secret': 'YOUR_API_SECRET'
+  }
 });
 ```
 
@@ -66,49 +79,64 @@ const response = await axios.post('https://pool.swypt.io/api/quotes', {
     "outputAmount": 255.72,
     "inputCurrency": "USDT",
     "outputCurrency": "KES",
-    "exchangeRate": 0.99,
+    "exchangeRate": 128.3556,
     "type": "offramp",
-    "network": "Polygon",
+    "network": "Celo",
     "fee": {
       "amount": 0.05,
       "currency": "USDT",
       "details": {
         "feeInKES": 6,
-        "estimatedOutputKES": 258.3
+        "estimatedOutputKES": 261.72
       }
     }
   }
 }
-
 ```
 
 ### Response Format For Successful Quote Request for On-Ramping
-```
+```json
 {
   "statusCode": 200,
   "message": "Quote retrieved successfully",
   "data": {
-    "inputAmount": "100",
-    "outputAmount": 97.08737864077669,
+    "inputAmount": "200",
+    "outputAmount": 1.4999,
     "inputCurrency": "KES",
-    "outputCurrency": "cKES",
-    "exchangeRate": 0.970873786407767,
+    "outputCurrency": "USDT",
+    "exchangeRate": 133.345489,
     "type": "onramp",
     "network": "Celo",
     "fee": {
-      "amount": 0.030976535274529544,
+      "amount": 0.03097,
       "currency": "USDT",
       "details": {
         "feeInKES": 4,
-        "estimatedOutputKES": 100
+        "estimatedOutputKES": 104
       }
     }
   }
 }
-
 ```
 
-### Error Response
+### Error Responses
+
+#### Authentication Error
+```json
+{
+  "status": "error",
+  "message": "API key and secret are required"
+}
+```
+
+```json
+{
+  "status": "error",
+  "message": "Invalid API credentials"
+}
+```
+
+#### Validation Error
 ```json
 {
   "statusCode": 400,
@@ -117,35 +145,104 @@ const response = await axios.post('https://pool.swypt.io/api/quotes', {
 }
 ```
 
+#### Server Error
+```json
+{
+  "error": "Internal server error"
+}
+```
+
 ## Get Supported Assets
-`GET https://pool.swypt.io/api/supported-assets`
+`GET https://pool.swypt.io/api/swypt-supported-assets`
 
 Retrieve all supported assets, networks, and currencies.
+
+### Authentication Required
+This endpoint requires API key authentication. Include the following headers with your request:
+- `x-api-key`: Your API key
+- `x-api-secret`: Your API secret
+
+### Example Request
+```javascript
+const response = await axios.get('https://pool.swypt.io/api/swypt-supported-assets', {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY',
+    'x-api-secret': 'YOUR_API_SECRET'
+  }
+});
+```
 
 ### Response Format
 ```json
 {
-  "statusCode": 200,
-  "message": "Assets retrieved successfully",
-  "data": {
-    "networks": ["Lisk", "Celo", "Base", "Polygon"],
-    "fiat": ["KES"],
-    "crypto": {
-      "Polygon": [
-        {
-          "symbol": "USDT",
-          "name": "Tether Polygon",
-          "decimals": 6,
-          "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
-        }
-      ]
-      // ... other networks
-    }
+  "networks": ["Lisk", "Celo", "Base", "Polygon"],
+  "fiat": ["KES"],
+  "crypto": {
+    "Polygon": [
+      {
+        "symbol": "USDT",
+        "name": "Tether Polygon",
+        "decimals": 6,
+        "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+      }
+    ],
+    "Celo": [
+      {
+        "symbol": "cKES",
+        "name": "Celo KES",
+        "decimals": 18,
+        "address": "0x3a0d9d7764FAE860A659eb96A500F1323b411e68"
+      },
+      {
+        "symbol": "cUSD",
+        "name": "Celo Dollar",
+        "decimals": 18,
+        "address": "0x765DE816845861e75A25fCA122bb6898B8B1282a"
+      }
+    ],
+    "Base": [
+      {
+        "symbol": "USDbC",
+        "name": "USD Base Coin",
+        "decimals": 6,
+        "address": "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA"
+      }
+    ],
+    "Lisk": [
+      {
+        "symbol": "LSK",
+        "name": "Lisk",
+        "decimals": 8,
+        "address": "0x0000000000000000000000000000000000000000"
+      }
+    ]
   }
 }
 ```
 
+### Error Responses
 
+#### Authentication Error
+```json
+{
+  "status": "error",
+  "message": "API key and secret are required"
+}
+```
+
+```json
+{
+  "status": "error",
+  "message": "Invalid API credentials"
+}
+```
+
+#### Server Error
+```json
+{
+  "error": "Internal server error"
+}
+```
 
 
 # OFF-RAMP FLOW 
@@ -158,7 +255,7 @@ Enables token withdrawal using EIP-2612 permit, eliminating the need for a separ
 
 `Parameters`
 
-```
+```javascript
 _tokenAddress (address): Token contract address being withdrawn
 _amountPlusfee (uint256): Total withdrawal amount including fees
 _exchangeRate (uint256): Current exchange rate for the token
@@ -171,7 +268,7 @@ s (bytes32): Second 32 bytes of the signature
 ```
 Here is an example 
 
-```
+```javascript
 // Create permit signature (on client side)
 const domain = {
     name: 'Token Name',
@@ -223,7 +320,7 @@ _feeAmount (uint256): Fee amount to be deducted
 nonce (uint256): Unique identifier for the withdrawal transaction
 
 - Example
-```
+```javascript
 // Approve contract first
 await token.approve(contractAddress, amountPlusFee);
 
@@ -236,34 +333,78 @@ const tx = await contract.withdrawToEscrow(
 );
 ```
 
-
 # Offramp Transaction Processing
-
 ## Initiate Offramp Transaction
-`POST https://pool.swypt.io/api/swypt-offramp`
-
+`POST https://pool.swypt.io/api/swypt-order-offramp`
 Process an offramp transaction after successful blockchain withdrawal.
 
-### Request Parameters
+### Authentication Required
+This endpoint requires API key authentication. Include the following headers with your request:
+- `x-api-key`: Your API key
+- `x-api-secret`: Your API secret
 
+### Request Parameters
 | Parameter | Description | Required | Example |
 | --- | --- | --- | --- |
 | chain | Blockchain network | Yes | "Celo" |
 | hash | Transaction hash from blockchain | Yes | "0x80856f025..." |
 | partyB | Recipient's phone number | Yes | "254703710518" |
 | tokenAddress | Token contract address | Yes | "0x48065fbBE..." |
+| args | Additional parameters (required for ICP chain) | Conditional | See ICP example |
 
-### Example Request
+#### ICP Chain Additional Parameters
+When using the `chain: "icp"`, the following additional parameters are required in the `args` object:
+
+| Parameter | Description | Required for ICP | Example |
+| --- | --- | --- | --- |
+| blockHeight | Block height of the transaction | Yes | "123456" |
+| amountIn | Amount of tokens transferred | Yes | "100" |
+| from | Sender address | Yes | "icp1234..." |
+| to | Recipient address | Yes | "icp5678..." |
+| exchangeRate | Token to fiat exchange rate | Yes | "1.5" |
+| fee | Transaction fee | Yes | "0.1" |
+
+### Example Request (Standard Chain)
 ```javascript
-const response = await axios.post('https://pool.swypt.io/api/swypt-offramp', {
+const response = await axios.post('https://pool.swypt.io/api/swypt-order-offramp', {
   chain: "Celo",
   hash: "0x80856f025035da9387873410155c4868c1825101e2c06d580aea48e8179b5e0b",
   partyB: "254703710518",
   tokenAddress: "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e"
+}, {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY',
+    'x-api-secret': 'YOUR_API_SECRET'
+  }
 });
-```
 
-### Success Response
+```
+### Example Request (ICP chain)
+```javascript
+const response = await axios.post('https://pool.swypt.io/api/swypt-order-offramp', {
+  chain: "icp",
+  hash: "",  // For ICP, hash is generated server-side
+  partyB: "254703710518",
+  tokenAddress: "icp_token_address",
+  args: {
+    blockHeight: "123456",
+    amountIn: "100",
+    from: "icp1234...",
+    to: "icp5678...",
+    exchangeRate: "1.5",
+    fee: "0.1"
+  }
+}, {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY',
+    'x-api-secret': 'YOUR_API_SECRET'
+  }
+});
+
+````
+
+### Successful Response
+
 ```json
 {
   "status": "success",
@@ -274,9 +415,8 @@ const response = await axios.post('https://pool.swypt.io/api/swypt-offramp', {
 }
 ```
 
-### Error Response
+### Error Responses
 ```json
-{
   "status": "error",
   "message": "This blockchain transaction has already been processed",
   "data": {
@@ -285,10 +425,34 @@ const response = await axios.post('https://pool.swypt.io/api/swypt-offramp', {
 }
 ```
 
-## Check off-ramp Transaction Status
-`GET https://pool.swypt.io/api/swypt-offramp-status/:orderID`
+```json
+{
+  "status": "error",
+  "message": "Missing required parameters: tokenAddress, hash, or phone number"
+}
+```
 
+```json
+{
+  "status": "error",
+  "message": "Missing required ICP parameters"
+}
+```
+```json
+{
+  "status": "error",
+  "message": "Unsupported blockchain: [chain name]"
+}
+```
+
+## Check off-ramp Transaction Status
+`GET https://pool.swypt.io/api/order-offramp-status/:orderID`
 Check the status of an offramp transaction using its orderID.
+
+### Authentication Required
+This endpoint requires API key authentication. Include the following headers with your request:
+- `x-api-key`: Your API key
+- `x-api-secret`: Your API secret
 
 ### Parameters
 | Parameter | Location | Description | Required | Example |
@@ -297,10 +461,16 @@ Check the status of an offramp transaction using its orderID.
 
 ### Example Request
 ```javascript
-const response = await axios.get('https://pool.swypt.io/api/swypt-offramp-status/WD-xsy6e-HO');
+const response = await axios.get('https://pool.swypt.io/api/order-offramp-status/WD-xsy6e-HO', {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY',
+    'x-api-secret': 'YOUR_API_SECRET'
+  }
+});
 ```
 
-### Success Response
+### Successful Response
+
 ```json
 {
   "status": "success",
@@ -319,11 +489,11 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-offramp-status
   }
 }
 ```
+## Possible Status Values
 
-### Possible Status Values
-- `PENDING`: Transaction is being processed
-- `SUCCESS`: Transaction completed successfully
-- `FAILED`: Transaction failed
+`PENDING`: Transaction is being processed
+`SUCCESS`: Transaction completed successfully
+`FAILED`: Transaction failed
 
 ### Error Responses
 
@@ -334,16 +504,14 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-offramp-status
   "message": "orderID ID is required"
 }
 ```
-
-2. Transaction Not Found:
+2. Transaction not found
 ```json
 {
   "status": "error",
   "message": "Transaction with the following WD-xsy6e-HO the not found"
 }
 ```
-
-3. Server Error:
+3. Server Error
 ```json
 {
   "status": "error",
@@ -362,6 +530,7 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-offramp-status
     "message": "Your withdrawal is being processed",
     "details": {
       "phoneNumber": "254703710518",
+      "ReceiverPartyPublicName": "254703710518 - Henry Kariuki Nyagah",
       "transactionSize": "20.00",
       "transactionSide": "withdraw",
       "initiatedAt": "2025-02-02T12:45:21.859Z"
@@ -369,8 +538,7 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-offramp-status
   }
 }
 ```
-
-2. Failed Transaction:
+2. Failed Transaction
 ```json
 {
   "status": "success",
@@ -378,7 +546,8 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-offramp-status
     "status": "FAILED",
     "message": "Withdrawal failed",
     "details": {
-      "phoneNumber": "254703710518",,
+      "phoneNumber": "254703710518",
+      "ReceiverPartyPublicName": "254703710518 - Henry Kariuki Nyagah",
       "transactionSize": "20.00",
       "transactionSide": "withdraw",
       "initiatedAt": "2025-02-02T12:45:21.859Z",
@@ -390,46 +559,50 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-offramp-status
 ```
 
 # Create Offramp Ticket
-`POST 'https://pool.swypt.io/api/user-offramp-ticket`
-
+`POST https://pool.swypt.io/api/create-offramp-ticket`
 Create a ticket for offramp transactions. This endpoint supports two methods:
 1. Creating a ticket from a failed/pending transaction using orderID
 2. Creating a new ticket directly with all required information
 
-## Request Parameters
+### Authentication Required
+This endpoint requires API key authentication. Include the following headers with your request:
+- `x-api-key`: Your API key
+- `x-api-secret`: Your API secret
 
+### Request Parameters
 | Parameter | Description | Required | Example |
 | --- | --- | --- | --- |
-| orderID | ID of failed/pending transaction | No | "WD-xsy6e-HO" |
-| phone | User's phone number | Yes | "254703710518" |
-| amount | Crypto amount | Yes | "100" |
-| description | Ticket description | Yes | "Failed withdrawal attempt" |
-| side | Transaction side | Yes | "off-ramp" |
-| userAddress | User's blockchain address | Yes | "0x742d35..." |
-| symbol | Token symbol | Yes | "USDT" |
-| tokenAddress | Token contract address | Yes | "0xc2132D05..." |
-| chain | Blockchain network | Yes | "Polygon" |
+| orderID | ID of failed/pending transaction | No* | "WD-xsy6e-HO" |
+| phone | User's phone number | Yes** | "254703710518" |
+| amount | Crypto amount | Yes** | "100" |
+| description | Ticket description | Yes** | "Failed withdrawal attempt" |
+| side | Transaction side | Yes** | "off-ramp" |
+| userAddress | User's blockchain address | Yes** | "0x742d35..." |
+| symbol | Token symbol | Yes** | "USDT" |
+| tokenAddress | Token contract address | Yes** | "0xc2132D05..." |
+| chain | Blockchain network | Yes** | "Polygon" |
 
-``` 
-orderID Required for direct ticket creation
-If orderID is provided, other fields become optional and will be populated from the failed/pending transaction
-```
+\* Either `orderID` OR all other fields are required  
+\** Required only when `orderID` is not provided
 
-## Example Requests
-
+### Example Requests
 1. Creating ticket from failed/pending transaction:
 ```javascript
-const response = await axios.post('https://pool.swypt.io/api/user-offramp-ticket', {
+const response = await axios.post('https://pool.swypt.io/api/create-offramp-ticket', {
   orderID: "WD-xsy6e-HO",
   description: "Refund for failed withdrawal",
   symbol: "USDT",  // Optional override
   chain: "Polygon" // Optional override
+}, {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY',
+    'x-api-secret': 'YOUR_API_SECRET'
+  }
 });
 ```
-
-2. Creating new ticket directly:
+2. Creating new ticket direclty 
 ```javascript
-const response = await axios.post('https://pool.swypt.io/api/user-offramp-ticket', {
+const response = await axios.post('https://pool.swypt.io/api/create-offramp-ticket', {
   phone: "254703710518",
   amount: "100",
   description: "Failed withdrawal attempt",
@@ -438,10 +611,15 @@ const response = await axios.post('https://pool.swypt.io/api/user-offramp-ticket
   symbol: "USDT",
   tokenAddress: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
   chain: "Polygon"
+}, {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY',
+    'x-api-secret': 'YOUR_API_SECRET'
+  }
 });
-```
 
-## Success Response
+```
+### Successful Response
 ```json
 {
   "status": "success",
@@ -461,63 +639,58 @@ const response = await axios.post('https://pool.swypt.io/api/user-offramp-ticket
   }
 }
 ```
+### Error Responses
 
-## Error Responses
+1.Missing Required Fields:
 
-1. Missing Required Fields:
 ```json
 {
   "status": "error",
   "message": "Please provide all required inputs: phone, amount, description, side, userAddress, symbol, tokenAddress, and chain"
 }
 ```
-
-2. Invalid Order ID:
+2.Invalid orderID
 ```json
 {
   "status": "error",
   "message": "No failed or pending transaction found with this orderID"
 }
 ```
-
-3. Validation Error:
+3.Validation Error
 ```json
 {
   "status": "error",
   "message": "ValidationError: [specific validation message]"
 }
 ```
-
-4. Server Error:
+4.Server Error
 ```json
 {
   "status": "error",
   "message": "Unable to process refund ticket"
 }
 ```
+### Important Notes
 
-## Important Notes
-- When using `orderID`, the ticket will be created using data from the failed or pending transaction
-- You can override specific fields (symbol, chain) even when using `orderID`
-- Both failed AND pending transactions can be used with `orderID` (unlike onramp which only accepts failed transactions)
-- The `Amount` field represents the crypto amount for offramp transactions
-- All fields are required when creating a ticket directly without `orderID`
+- Either provide orderID OR all other required fields
+- When using orderID, the ticket will be created using data from the failed or pending transaction
+- You can override specific fields (symbol, chain) even when using orderID
+- Both failed AND pending transactions can be used with orderID
+- All fields are required when creating a ticket directly without orderID
 - Phone numbers should be in international format (e.g., "254703710518")
-- The system automatically sets `side` to 'off-ramp' if not provided
-
-## Key Differences from Onramp Tickets
-1. Accepts both failed AND pending transactions when using `orderID`
-2. Uses `CryptoAmount` instead of `Amount` when retrieving from failed transactions
-3. Handles amounts in crypto value rather than fiat
-4. Includes different transaction status checks in the backend
+- The system automatically sets side to 'off-ramp' if not provided
 
 
-# ONRAMP PROCESS FlOW
 
+### ONRAMP PROCESS FLOW
 ## 1. Initiate STK Push
-`POST /https://pool.swypt.io/api/swypt-onramping`
-
+`POST https://pool.swypt.io/api/swypt-onramp`
 Initiates the M-Pesa STK push process for fiat deposit.
+
+### Authentication Required
+This endpoint requires API key authentication. Include the following headers with your request:
+- `x-api-key`: Your API key
+- `x-api-secret`: Your API secret
 
 ### Request Parameters
 | Parameter | Description | Required | Example |
@@ -526,18 +699,24 @@ Initiates the M-Pesa STK push process for fiat deposit.
 | amount | Amount in KES | Yes | "5000" |
 | side | Transaction side | Yes | "onramp" |
 | userAddress | User's blockchain address | Yes | "0x742d35Cc6634C0532925a3b844Bc454e4438f44e" |
+| tokenAddress | Token contract address | Yes | "0xc2132D05D31c914a87C6611C10748AEb04B58e8F" |
 
 ### Example Request
 ```javascript
-const response = await axios.post('https://pool.swypt.io/api/swypt-onramping', {
+const response = await axios.post('https://pool.swypt.io/api/swypt-onramp', {
   partyA: "254703710518",
   amount: "5000",
   side: "onramp",
-  userAddress: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
+  userAddress: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+  tokenAddress: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+}, {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY',
+    'x-api-secret': 'YOUR_API_SECRET'
+  }
 });
 ```
-
-### Success Response
+### Successful Response
 ```json
 {
   "status": "success",
@@ -548,11 +727,38 @@ const response = await axios.post('https://pool.swypt.io/api/swypt-onramping', {
   }
 }
 ```
+### Error Responses
+
+1.Missing Required Parameters:
+```json
+{
+  "status": "error",
+  "message": "Failed to record the onramp transaction order"
+}
+```
+2. STK Push Failure
+```json
+{
+  "status": "error",
+  "message": "Failed to initiate STK Push payment"
+}
+```
+3.Server Error
+```json
+{
+  "status": "error",
+  "message": "An error occurred during the STK Push transaction"
+}
+```
 
 ## 2. Check Onramp Status
-`GET https://pool.swypt.io/api/swypt-onramp-status/:orderID`
-
+`GET https://pool.swypt.io/api/order-onramp-status/:orderID`
 Check the status of an STK push transaction.
+
+### Authentication Required
+This endpoint requires API key authentication. Include the following headers with your request:
+- `x-api-key`: Your API key
+- `x-api-secret`: Your API secret
 
 ### URL Parameters
 | Parameter | Description | Required | Example |
@@ -561,12 +767,16 @@ Check the status of an STK push transaction.
 
 ### Example Request
 ```javascript
-const response = await axios.get('https://pool.swypt.io/api/swypt-onramp-status/D-rclsg-VL');
+const response = await axios.get('https://pool.swypt.io/api/order-onramp-status/D-rclsg-VL', {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY',
+    'x-api-secret': 'YOUR_API_SECRET'
+  }
+});
 ```
+## Response Scenarios
 
-### Response Scenarios
-
-1. Successful Transaction:
+1.Successful Transaction:
 ```json
 {
   "status": "success",
@@ -575,34 +785,19 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-onramp-status/
     "message": "Deposit completed successfully",
     "orderID": "D-ri3b1-7H",
     "details": {
-      "phoneNumber": 254703710518,
+      "phoneNumber": "254703710518",
       "mpesaReceipt": "TBF842GPCO",
-      "transactionDate": 20250215083338,
-      "resultDescription": "Transaction initiated"
+      "transactionDate": "2025-02-15T08:33:38.000Z",
+      "cryptoAmount": "100",
+      "symbol": "USDT",
+      "transactionHash": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+      "resultDescription": "Transaction initiated",
+      "chain": "Ethereum"
     }
   }
 }
 ```
-
-2. Cancelled by User:
-```json
-{
-  "status": "success",
-  "data": {
-    "status": "CANCELLED",
-    "message": "Unknown transaction status",
-    "orderID": "D-rclsg-VL",
-    "details": {
-      "phoneNumber": 254703710518,
-      "mpesaReceipt": "ws_CO_15022025082917857703710518",
-      "transactionDate": 1739597355087,
-      "resultDescription": "Transaction cancelled by user"
-    }
-  }
-}
-```
-
-3. Insufficient Funds:
+2.Failed Transaction:
 ```json
 {
   "status": "success",
@@ -611,16 +806,19 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-onramp-status/
     "message": "Insufficient balance",
     "orderID": "D-rm3qn-3Q",
     "details": {
-      "phoneNumber": 254703710518,
+      "phoneNumber": "254703710518",
       "mpesaReceipt": "ws_CO_15022025083640743703710518",
-      "transactionDate": 1739597798255,
-      "resultDescription": "Insufficient balance"
+      "transactionDate": "2025-02-15T08:36:40.000Z",
+      "cryptoAmount": "",
+      "symbol": "",
+      "transactionHash": "",
+      "resultDescription": "Insufficient balance",
+      "chain": ""
     }
   }
 }
 ```
-
-4. Pending Transaction:
+3.Pending Transaction:
 ```json
 {
   "status": "success",
@@ -629,49 +827,75 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-onramp-status/
     "message": "Your deposit is being processed",
     "orderID": "D-roug7-UT",
     "details": {
-      "phoneNumber": 254703710518,
+      "phoneNumber": "254703710518",
       "mpesaReceipt": "ws_CO_15022025083848183703710518",
-      "transactionDate": 1739597926182,
-      "resultDescription": "Transaction initiated"
+      "transactionDate": "2025-02-15T08:38:48.000Z",
+      "cryptoAmount": "",
+      "symbol": "",
+      "transactionHash": "",
+      "resultDescription": "Transaction initiated",
+      "chain": ""
     }
   }
 }
 ```
+## Error Responses
 
-## 3. Process Crypto Transfer
-`POST https://pool.swypt.io/api/deposit`
+1. Missing Order ID:
+```json
+{
+  "status": "error",
+  "message": "orderID is required"
+}
+```
+2. Transaction Not Found:
+```json
+{
+  "status": "error",
+  "message": "Transaction D-rclsg-VL not found"
+}
+```
+3.Server Error:
+```json
+{
+  "status": "error",
+  "message": "Failed to check deposit status"
+}
+```
 
+
+## 3. Process Crypto Transfer To User
+`POST https://pool.swypt.io/api/swypt-deposit`
 Process the crypto transfer after successful M-Pesa payment.
+
+### Authentication Required
+This endpoint requires API key authentication. Include the following headers with your request:
+- `x-api-key`: Your API key
+- `x-api-secret`: Your API secret
 
 ### Request Parameters
 | Parameter | Description | Required | Example |
 | --- | --- | --- | --- |
-| chain | Blockchain network | Yes | "Polygon" |
-| amount | Amount to transfer | Yes | "100" |
+| chain | Blockchain network | Yes | "Celo" |
 | address | Recipient address | Yes | "0x742d35..." |
-| tokenAddress | Token contract address | Yes | "0xc2132D05..." |
-| exchangeRate | Current exchange rate | Yes | "150.5" |
-| feeAmount | Transaction fee | Yes | "0.5" |
-| symbol | Token symbol | Yes | "USDT" |
-| project | Project identifier | No | "swypt" |
 | orderID | Original transaction order ID | Yes | "D-ri3b1-7H" |
+| project | Project identifier | No | "onramp" |
 
 ### Example Request
 ```javascript
-const response = await axios.post('https://pool.swypt.io/api/deposit', {
-  chain: "Polygon",
-  amount: "100",
+const response = await axios.post('https://pool.swypt.io/api/swypt-deposit', {
+  chain: "Celo",
   address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
-  tokenAddress: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-  exchangeRate: "150.5",
-  feeAmount: "0.5",
-  symbol: "USDT",
-  project: "swypt",
-  orderID: "D-ri3b1-7H"
+  orderID: "D-ri3b1-7H",
+  project: "onramp"
+}, {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY',
+    'x-api-secret': 'YOUR_API_SECRET'
+  }
 });
 ```
-
-### Success Response
+## Success Response
 ```json
 {
   "status": 200,
@@ -681,40 +905,77 @@ const response = await axios.post('https://pool.swypt.io/api/deposit', {
   "hash": "0x80856f025035da9387873410155c4868c1825101e2c06d580aea48e8179b5e0b"
 }
 ```
-
-### Error Responses
+## Error Responses
 
 1. Missing Parameters:
 ```json
 {
   "status": "error",
-  "message": "Missing required parameters: address, amount, or orderID"
+  "message": "Missing required parameters: address or orderID"
 }
 ```
-
-2. Transaction Already Processed:
+2.Transaction Not Found:
+```
+{
+  "status": "error",
+  "message": "No transaction found for orderID: D-ri3b1-7H"
+}
+```
+3. Transaction Pending:
 ```json
 {
   "status": "error",
-  "message": "Transaction D-ri3b1-7H has already been processed for crypto transfer"
+  "message": "Transaction D-ri3b1-7H: STK push payment is being processed"
 }
 ```
-
-3. Invalid Chain:
+4. Transaction Failed:
+```json
+{
+  "status": "error",
+  "message": "Transaction D-ri3b1-7H: Payment failed"
+}
+```
+5.Transaction Already Processed:
+```json
+{
+  "status": "error",
+  "message": "Transaction D-ri3b1-7H has already been processed"
+}
+```
+6. Invalid Chain:
 ```json
 {
   "status": "error",
   "message": "Invalid chain: XYZ"
 }
 ```
-
-4. Processing Error:
+7. Unsupported Chain:
+```json
+{
+  "status": "error",
+  "message": "XYZ chain is not supported"
+}
+```
+8.Processing Error:
 ```json
 {
   "status": "error",
   "message": "Failed to process [Chain] transaction: [specific error message]"
 }
 ```
+### Supported Chains
+
+- Celo
+- Base
+- Lisk
+- icp (Internet Computer Protocol)
+
+## Notes
+
+- This endpoint should only be called after a successful STK push payment (status: SUCCESS)
+- The system automatically calculates exchange rates and fees based on the payment amount
+- For ICP chain, the system uses a predefined identity to process transactions
+
 
 # Create Onramp Ticket
 `POST /api/user-onramp-ticket`
