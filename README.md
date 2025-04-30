@@ -7,7 +7,7 @@ Deployed Contract on POLYGON
 Deployed Contract on LISK
 [Swypt Contract](https://blockscout.lisk.com/address/0x2816a02000B9845C464796b8c36B2D5D199525d5)
 
-Deployed Contract on CELO
+Deployed Contract on celo
 [Swypt Contract](https://celoscan.io/address/0x2816a02000B9845C464796b8c36B2D5D199525d5#code)
 
 
@@ -32,7 +32,7 @@ This endpoint requires API key authentication. Include the following headers wit
 | amount | Amount to convert | "5000" | Yes |
 | fiatCurrency | Fiat currency code | "KES" | Yes |
 | cryptoCurrency | Cryptocurrency symbol | "USDT" | Yes |
-| network | Blockchain network | "Celo" | Yes |
+| network | Blockchain network | "celo" | Yes |
 | category | Transaction category (for offramp only) | "B2C" | No |
 
 ### Example Requests
@@ -43,7 +43,7 @@ const response = await axios.post('https://pool.swypt.io/api/swypt-quotes', {
   amount: "100",
   fiatCurrency: "KES",
   cryptoCurrency: "USDT", //cKes, USDC
-  network: "Celo"
+  network: "celo"
 }, {
   headers: {
     'x-api-key': 'YOUR_API_KEY',
@@ -59,7 +59,7 @@ const response = await axios.post('https://pool.swypt.io/api/swypt-quotes', {
   amount: "2",
   fiatCurrency: "KES",
   cryptoCurrency: "USDT",
-  network: "Celo",
+  network: "celo",
   category: "B2C"
 }, {
   headers: {
@@ -81,7 +81,7 @@ const response = await axios.post('https://pool.swypt.io/api/swypt-quotes', {
     "outputCurrency": "KES",
     "exchangeRate": 128.3556,
     "type": "offramp",
-    "network": "Celo",
+    "network": "celo",
     "fee": {
       "amount": 0.05,
       "currency": "USDT",
@@ -106,7 +106,7 @@ const response = await axios.post('https://pool.swypt.io/api/swypt-quotes', {
     "outputCurrency": "USDT",
     "exchangeRate": 133.345489,
     "type": "onramp",
-    "network": "Celo",
+    "network": "celo",
     "fee": {
       "amount": 0.03097,
       "currency": "USDT",
@@ -141,7 +141,7 @@ const response = await axios.post('https://pool.swypt.io/api/swypt-quotes', {
 {
   "statusCode": 400,
   "message": "Invalid network",
-  "error": "Unsupported network. Supported networks: Lisk, Celo, Base, Polygon"
+  "error": "Unsupported network. Supported networks: Lisk, celo, Base, Polygon"
 }
 ```
 
@@ -175,7 +175,7 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-supported-asse
 ### Response Format
 ```json
 {
-  "networks": ["Lisk", "Celo", "Base", "Polygon"],
+  "networks": ["Lisk", "celo", "Base", "Polygon"],
   "fiat": ["KES"],
   "crypto": {
     "Polygon": [
@@ -186,16 +186,16 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-supported-asse
         "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
       }
     ],
-    "Celo": [
+    "celo": [
       {
         "symbol": "cKES",
-        "name": "Celo KES",
+        "name": "celo KES",
         "decimals": 18,
         "address": "0x3a0d9d7764FAE860A659eb96A500F1323b411e68"
       },
       {
         "symbol": "cUSD",
-        "name": "Celo Dollar",
+        "name": "celo Dollar",
         "decimals": 18,
         "address": "0x765DE816845861e75A25fCA122bb6898B8B1282a"
       }
@@ -346,7 +346,7 @@ This endpoint requires API key authentication. Include the following headers wit
 ### Request Parameters
 | Parameter | Description | Required | Example |
 | --- | --- | --- | --- |
-| chain | Blockchain network | Yes | "Celo" |
+| chain | Blockchain network | Yes | "celo" |
 | hash | Transaction hash from blockchain | Yes | "0x80856f025..." |
 | partyB | Recipient's phone number | Yes | "254703710518" |
 | tokenAddress | Token contract address | Yes | "0x48065fbBE..." |
@@ -367,7 +367,7 @@ When using the `chain: "icp"`, the following additional parameters are required 
 ### Example Request (Standard Chain)
 ```javascript
 const response = await axios.post('https://pool.swypt.io/api/swypt-order-offramp', {
-  chain: "Celo",
+  chain: "celo",
   hash: "0x80856f025035da9387873410155c4868c1825101e2c06d580aea48e8179b5e0b",
   partyB: "254703710518",
   tokenAddress: "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e"
@@ -876,7 +876,7 @@ This endpoint requires API key authentication. Include the following headers wit
 ### Request Parameters
 | Parameter | Description | Required | Example |
 | --- | --- | --- | --- |
-| chain | Blockchain network | Yes | "Celo" |
+| chain | Blockchain network | Yes | "celo" |
 | address | Recipient address | Yes | "0x742d35..." |
 | orderID | Original transaction order ID | Yes | "D-ri3b1-7H" |
 | project | Project identifier | No | "onramp" |
@@ -884,7 +884,7 @@ This endpoint requires API key authentication. Include the following headers wit
 ### Example Request
 ```javascript
 const response = await axios.post('https://pool.swypt.io/api/swypt-deposit', {
-  chain: "Celo",
+  chain: "celo",
   address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
   orderID: "D-ri3b1-7H",
   project: "onramp"
@@ -965,7 +965,7 @@ const response = await axios.post('https://pool.swypt.io/api/swypt-deposit', {
 ```
 ### Supported Chains
 
-- Celo
+- celo
 - Base
 - Lisk
 - icp (Internet Computer Protocol)
@@ -1092,7 +1092,7 @@ const response = await axios.post('https://pool.swypt.io/api/user-onramp-ticket'
 
 ### Supported Chains
 - Lisk
-- Celo
+- celo
 - Base
 - ICP
 - Polygon
