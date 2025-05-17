@@ -1,8 +1,12 @@
 # SWYPT API DOCUMENTATION FOR ON-RAMPS & OFF-RAMPS
 This repo serves as a documentation for integration with swypt APIs and how to integrate with our smart contract functions. 
 
+Deployed Contract on PHAROS DEVNET
+
+[Swypt Contract](https://pharosscan.xyz/address/0x5d3398142E393bB4BBFF6f67a3778322d3F9D90B#code)
+
 Deployed Contract on POLYGON
-[Swypt Contract](https://polygonscan.com/address/0x980b2f387bbecd67d94b2b6eebd4fd238946466a#code)
+[Swypt Contract](https://polygonscan.com/address/0x5d3398142E393bB4BBFF6f67a3778322d3F9D90B#code)
 
 Deployed Contract on LISK
 [Swypt Contract](https://blockscout.lisk.com/address/0x2816a02000B9845C464796b8c36B2D5D199525d5)
