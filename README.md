@@ -10,7 +10,7 @@ Deployed Contract on POLYGON
 Deployed Contract on LISK
 [Swypt Contract](https://blockscout.lisk.com/address/0x2816a02000B9845C464796b8c36B2D5D199525d5)
 
-Deployed Contract on celo
+Deployed Contract on Celo
 [Swypt Contract](https://celoscan.io/address/0x2816a02000B9845C464796b8c36B2D5D199525d5#code)
 
 
