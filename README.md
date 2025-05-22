@@ -2,7 +2,6 @@
 This repo serves as a documentation for integration with swypt APIs and how to integrate with our smart contract functions. 
 
 Deployed Contract on PHAROS DEVNET
-
 [Swypt Contract](https://pharosscan.xyz/address/0x5d3398142E393bB4BBFF6f67a3778322d3F9D90B#code)
 
 Deployed Contract on POLYGON
@@ -792,11 +791,7 @@ const response = await axios.get('https://pool.swypt.io/api/order-onramp-status/
       "phoneNumber": "254703710518",
       "mpesaReceipt": "TBF842GPCO",
       "transactionDate": "2025-02-15T08:33:38.000Z",
-      "cryptoAmount": "100",
-      "symbol": "USDT",
-      "transactionHash": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
       "resultDescription": "Transaction initiated",
-      "chain": "Ethereum"
     }
   }
 }
@@ -813,11 +808,8 @@ const response = await axios.get('https://pool.swypt.io/api/order-onramp-status/
       "phoneNumber": "254703710518",
       "mpesaReceipt": "ws_CO_15022025083640743703710518",
       "transactionDate": "2025-02-15T08:36:40.000Z",
-      "cryptoAmount": "",
-      "symbol": "",
-      "transactionHash": "",
       "resultDescription": "Insufficient balance",
-      "chain": ""
+
     }
   }
 }
@@ -834,11 +826,8 @@ const response = await axios.get('https://pool.swypt.io/api/order-onramp-status/
       "phoneNumber": "254703710518",
       "mpesaReceipt": "ws_CO_15022025083848183703710518",
       "transactionDate": "2025-02-15T08:38:48.000Z",
-      "cryptoAmount": "",
-      "symbol": "",
-      "transactionHash": "",
       "resultDescription": "Transaction initiated",
-      "chain": ""
+     
     }
   }
 }
@@ -969,7 +958,8 @@ const response = await axios.post('https://pool.swypt.io/api/swypt-deposit', {
 ```
 ### Supported Chains
 
-- celo
+- Celo
+- Polygon
 - Base
 - Lisk
 - icp (Internet Computer Protocol)
@@ -1096,7 +1086,8 @@ const response = await axios.post('https://pool.swypt.io/api/user-onramp-ticket'
 
 ### Supported Chains
 - Lisk
-- celo
+- Polygon
+- Celo
 - Base
 - ICP
 - Polygon
