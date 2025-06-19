@@ -872,7 +872,7 @@ This endpoint requires API key authentication. Include the following headers wit
 | chain | Blockchain network | Yes | "celo" |
 | address | Recipient address | Yes | "0x742d35..." |
 | orderID | Original transaction order ID | Yes | "D-ri3b1-7H" |
-| project | Project identifier | No | "onramp" |
+| project | Project identifier | Yes | "name of your project" |
 
 ### Example Request
 ```javascript
