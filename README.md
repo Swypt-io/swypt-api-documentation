@@ -880,7 +880,7 @@ const response = await axios.post('https://pool.swypt.io/api/swypt-deposit', {
   chain: "celo",
   address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
   orderID: "D-ri3b1-7H",
-  project: "onramp"
+  project: "name of your project"
 }, {
   headers: {
     'x-api-key': 'YOUR_API_KEY',
