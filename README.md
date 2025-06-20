@@ -1,9 +1,6 @@
 # SWYPT API DOCUMENTATION FOR ON-RAMPS & OFF-RAMPS
 This repo serves as a documentation for integration with swypt APIs and how to integrate with our smart contract functions. 
 
-Deployed Contract on PHAROS DEVNET
-[Swypt Contract](https://pharosscan.xyz/address/0x5d3398142E393bB4BBFF6f67a3778322d3F9D90B#code)
-
 Deployed Contract on POLYGON
 [Swypt Contract](https://polygonscan.com/address/0x5d3398142E393bB4BBFF6f67a3778322d3F9D90B#code)
 
@@ -74,52 +71,58 @@ const response = await axios.post('https://pool.swypt.io/api/swypt-quotes', {
 
 ### Response Format For Successful Quote Request for Off-Ramping
 ```json
+
 {
-  "statusCode": 200,
-  "message": "Quote retrieved successfully",
-  "data": {
-    "inputAmount": "2",
-    "outputAmount": 255.72,
-    "inputCurrency": "USDT",
-    "outputCurrency": "KES",
-    "exchangeRate": 128.3556,
-    "type": "offramp",
-    "network": "celo",
-    "fee": {
-      "amount": 0.05,
-      "currency": "USDT",
-      "details": {
-        "feeInKES": 6,
-        "estimatedOutputKES": 261.72
-      }
+    "statusCode": 200,
+    "message": "Quote retrieved successfully",
+    "data": {
+        "inputAmount": "1",
+        "outputAmount": "129.2200",
+        "inputCurrency": "USDT",
+        "outputCurrency": "KES",
+        "exchangeRate": 129.22,
+        "type": "offramp",
+        "network": "lisk",
+        "fee": {
+            "amount": "0.046432",
+            "currency": "USDT",
+            "estimatedOutputKES": 123.22,
+            "decimals": 6
+        },
+        "limits": {
+            "min": 10,
+            "max": 30000,
+            "currency": "KES"
+        }
     }
-  }
 }
 ```
 
 ### Response Format For Successful Quote Request for On-Ramping
 ```json
 {
-  "statusCode": 200,
-  "message": "Quote retrieved successfully",
-  "data": {
-    "inputAmount": "200",
-    "outputAmount": 1.4999,
-    "inputCurrency": "KES",
-    "outputCurrency": "USDT",
-    "exchangeRate": 133.345489,
-    "type": "onramp",
-    "network": "celo",
-    "fee": {
-      "amount": 0.03097,
-      "currency": "USDT",
-      "details": {
-        "feeInKES": 4,
-        "estimatedOutputKES": 104
-      }
+    "statusCode": 200,
+    "message": "Quote retrieved successfully",
+    "data": {
+        "inputAmount": "100",
+        "outputAmount": 0.7738740133106331,
+        "inputCurrency": "KES",
+        "outputCurrency": "USDT",
+        "exchangeRate": 129.22,
+        "type": "onramp",
+        "network": "lisk",
+        "fee": {
+            "feeInKES": 1,
+            "estimatedOutputKES": 101
+        },
+        "limits": {
+            "min": 1,
+            "max": 10000,
+            "currency": "KES"
+        }
     }
-  }
 }
+
 ```
 
 ### Error Responses
@@ -178,48 +181,94 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-supported-asse
 ### Response Format
 ```json
 {
-  "networks": ["Lisk", "celo", "Base", "Polygon"],
-  "fiat": ["KES"],
-  "crypto": {
-    "Polygon": [
-      {
-        "symbol": "USDT",
-        "name": "Tether Polygon",
-        "decimals": 6,
-        "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
-      }
+    "networks": [
+        "lisk",
+        "celo",
+        "base",
+        "polygon",
+        "scroll"
     ],
-    "celo": [
-      {
-        "symbol": "cKES",
-        "name": "celo KES",
-        "decimals": 18,
-        "address": "0x3a0d9d7764FAE860A659eb96A500F1323b411e68"
-      },
-      {
-        "symbol": "cUSD",
-        "name": "celo Dollar",
-        "decimals": 18,
-        "address": "0x765DE816845861e75A25fCA122bb6898B8B1282a"
-      }
+    "fiat": [
+        "KES",
+        "USD"
     ],
-    "Base": [
-      {
-        "symbol": "USDbC",
-        "name": "USD Base Coin",
-        "decimals": 6,
-        "address": "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA"
-      }
-    ],
-    "Lisk": [
-      {
-        "symbol": "LSK",
-        "name": "Lisk",
-        "decimals": 8,
-        "address": "0x0000000000000000000000000000000000000000"
-      }
-    ]
-  }
+    "crypto": {
+        "lisk": [
+            {
+                "symbol": "USDT",
+                "name": "Tether LISK",
+                "decimals": 6,
+                "address": "0x05D032ac25d322df992303dCa074EE7392C117b9"
+            },
+            {
+                "symbol": "ETH",
+                "name": "Ethereum",
+                "decimals": 18,
+                "address": "0x0000000000000000000000000000000000000000"
+            }
+        ],
+        "celo": [
+            {
+                "symbol": "USDT",
+                "name": "Tether Celo",
+                "decimals": 6,
+                "address": "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e"
+            },
+            {
+                "symbol": "cKES",
+                "name": "Celo Kenyan Shilling",
+                "decimals": 18,
+                "address": "0x456a3D042C0DbD3db53D5489e98dFb038553B0d0"
+            },
+            {
+                "symbol": "USDC",
+                "name": "USDC",
+                "decimals": 6,
+                "address": "0xcebA9300f2b948710d2653dD7B07f33A8B32118C"
+            },
+            {
+                "symbol": "CELO",
+                "name": "Celo",
+                "decimals": 18,
+                "address": "0x471EcE3750Da237f93B8E339c536989b8978a438"
+            }
+        ],
+        "base": [],
+        "polygon": [
+            {
+                "symbol": "USDT",
+                "name": "Tether Polygon",
+                "decimals": 6,
+                "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+            },
+            {
+                "symbol": "USDC",
+                "name": "USD Coin Polygon",
+                "decimals": 6,
+                "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"
+            },
+            {
+                "symbol": "MATIC",
+                "name": "Polygon",
+                "decimals": 18,
+                "address": "0x0000000000000000000000000000000000000000"
+            }
+        ],
+        "scroll": [
+            {
+                "symbol": "USDT",
+                "name": "Tether scroll",
+                "decimals": 6,
+                "address": "0x3AF7D19aAeCf142C91FF1A8575A316807a0f611A"
+            },
+            {
+                "symbol": "ETH",
+                "name": "ETH",
+                "decimals": 18,
+                "address": "0x0000000000000000000000000000000000000000"
+            }
+        ]
+    }
 }
 ```
 
@@ -353,6 +402,7 @@ This endpoint requires API key authentication. Include the following headers wit
 | hash | Transaction hash from blockchain | Yes | "0x80856f025..." |
 | partyB | Recipient's phone number | Yes | "254703710518" |
 | tokenAddress | Token contract address | Yes | "0x48065fbBE..." |
+| project | The name of  your project | Yes | "project-mocha" |
 | args | Additional parameters (required for ICP chain) | Conditional | See ICP example |
 
 #### ICP Chain Additional Parameters
@@ -373,7 +423,8 @@ const response = await axios.post('https://pool.swypt.io/api/swypt-order-offramp
   chain: "celo",
   hash: "0x80856f025035da9387873410155c4868c1825101e2c06d580aea48e8179b5e0b",
   partyB: "254703710518",
-  tokenAddress: "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e"
+  tokenAddress: "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e",
+  project: "Name of your project"
 }, {
   headers: {
     'x-api-key': 'YOUR_API_KEY',
