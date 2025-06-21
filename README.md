@@ -10,6 +10,9 @@ Deployed Contract on LISK
 Deployed Contract on Celo
 [Swypt Contract](https://celoscan.io/address/0x2816a02000B9845C464796b8c36B2D5D199525d5#code)
 
+Deployed Contract on Base
+[Swypt Contract](https://basescan.org/address/0x5e5136b964e84c35e7b8f78b06b537ef80ee60e0#code)
+
 
 
 # Getting Quotes
