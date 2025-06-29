@@ -79,17 +79,18 @@ const response = await axios.post('https://pool.swypt.io/api/swypt-quotes', {
     "statusCode": 200,
     "message": "Quote retrieved successfully",
     "data": {
-        "inputAmount": "1",
-        "outputAmount": "129.2200",
+        "inputAmount": "0.2",
+        "outputAmount": "25.8900",
         "inputCurrency": "USDT",
         "outputCurrency": "KES",
-        "exchangeRate": 129.22,
+        "exchangeRate": 129.45,
         "type": "offramp",
         "network": "lisk",
         "fee": {
-            "amount": "0.046432",
+            "feeInInputCurrency": "0.007725",
             "currency": "USDT",
-            "estimatedOutputKES": 123.22,
+            "feeInOutputCurrency": 1,
+            "estimatedOutputKES": 24.89,
             "decimals": 6
         },
         "limits": {
