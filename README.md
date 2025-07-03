@@ -237,7 +237,20 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-supported-asse
                 "address": "0x471EcE3750Da237f93B8E339c536989b8978a438"
             }
         ],
-        "base": [],
+        "base": [
+            {
+                "symbol": "USDC",
+                "name": "USDC",
+                "decimals": 6,
+                "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+            },
+            {
+                "symbol": "ETH",
+                "name": "ETH",
+                "decimals": 18,
+                "address": "0x0000000000000000000000000000000000000000"
+            }
+        ],
         "polygon": [
             {
                 "symbol": "USDT",
@@ -263,7 +276,7 @@ const response = await axios.get('https://pool.swypt.io/api/swypt-supported-asse
                 "symbol": "USDT",
                 "name": "Tether scroll",
                 "decimals": 6,
-                "address": "0x3AF7D19aAeCf142C91FF1A8575A316807a0f611A"
+                "address": "0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df"
             },
             {
                 "symbol": "ETH",
